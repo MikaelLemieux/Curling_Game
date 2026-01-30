@@ -281,6 +281,49 @@ button:active {
   gap: 12px;
 }
 
+.toggle {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+}
+
+.toggle input {
+  display: none;
+}
+
+.toggle-track {
+  width: 44px;
+  height: 24px;
+  border-radius: 999px;
+  background: rgba(118, 155, 199, 0.3);
+  position: relative;
+  transition: 0.2s ease;
+}
+
+.toggle-track::after {
+  content: "";
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #f2f6ff;
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  transition: 0.2s ease;
+}
+
+.toggle input:checked + .toggle-track {
+  background: rgba(74, 195, 255, 0.6);
+}
+
+.toggle input:checked + .toggle-track::after {
+  left: 22px;
+  background: #03101f;
+}
+
 .shot-grid {
   display: grid;
   gap: 10px;

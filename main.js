@@ -8,6 +8,7 @@ const ui = {
   endNumberLabel: document.getElementById("endNumber"),
   hammerTeamLabel: document.getElementById("hammerTeam"),
   turnIndicator: document.getElementById("turnIndicator"),
+  shotClockLabel: document.getElementById("shotClock"),
   speedLabel: document.getElementById("speed"),
   spinLabel: document.getElementById("spin"),
   distanceLabel: document.getElementById("distance"),
@@ -28,6 +29,8 @@ const ui = {
   angleValue: document.getElementById("angleValue"),
   endsSetting: document.getElementById("endsSetting"),
   aiDifficulty: document.getElementById("aiDifficulty"),
+  aimAssistToggle: document.getElementById("aimAssist"),
+  shotClockToggle: document.getElementById("shotClockToggle"),
 };
 
 const controls = {

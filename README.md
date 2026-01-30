@@ -13,6 +13,7 @@ Then open `http://localhost:8000`.
 - Press **Space** to throw a stone.
 - Hold **Shift** or the Sweep button to reduce friction.
 - Use the Shot Library for presets and Undo Shot to reverse the last throw.
+- Aim assist and the shot clock can be toggled in Match Settings.
 
 ## Gameplay
 - Two teams (Red vs Blue) play 8 stones per end.

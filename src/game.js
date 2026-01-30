@@ -37,6 +37,8 @@ export class Game {
       endHistory: [],
       aiThinking: false,
       lastShot: null,
+      shotClock: 30,
+      shotClockActive: true,
     };
   }
 
@@ -77,6 +79,13 @@ export class Game {
       this.state.totalEnds = Number(this.ui.endsSetting.value);
     });
 
+    this.ui.shotClockToggle.addEventListener("change", () => {
+      this.state.shotClockActive = this.ui.shotClockToggle.checked;
+      if (!this.state.shotClockActive) {
+        this.state.shotClock = 30;
+      }
+    });
+
     this.ui.presetButtons.forEach((button) => {
       button.addEventListener("click", () => this.applyPreset(button));
     });
@@ -93,6 +102,7 @@ export class Game {
     this.ui.endNumberLabel.textContent = this.state.endNumber;
     this.ui.hammerTeamLabel.textContent = this.teamName(this.state.hammerTeam);
     this.ui.turnIndicator.textContent = this.state.currentTeam === 0 ? "Player" : "AI";
+    this.ui.shotClockLabel.textContent = this.state.shotClock.toFixed(0);
 
     this.ui.teamCards.forEach((card, index) => {
       card.classList.toggle("active", index === this.state.currentTeam);
@@ -158,6 +168,7 @@ export class Game {
 
     this.state.currentShot += 1;
     this.state.currentTeam = this.state.currentShot % 2;
+    this.resetShotClock();
     this.updateUI();
   }
 
@@ -181,11 +192,13 @@ export class Game {
       this.state.currentTeam = this.state.currentShot % 2;
     }
     this.state.shotHistory.shift();
+    this.resetShotClock();
     this.updateUI();
   }
 
   startAIThrow() {
     this.state.aiThinking = true;
+    this.resetShotClock();
     const difficulty = Number(this.ui.aiDifficulty.value);
     const aiShot = this.ai.chooseShot({
       stones: this.state.stones,
@@ -216,6 +229,7 @@ export class Game {
     this.state.currentTeam = this.state.hammerTeam;
     this.state.distanceTraveled = 0;
     this.state.lastShot = null;
+    this.resetShotClock();
     this.updateUI();
   }
 
@@ -247,6 +261,10 @@ export class Game {
 
     this.state.endNumber += 1;
     this.resetEnd();
+  }
+
+  resetShotClock() {
+    this.state.shotClock = 30;
   }
 
   recordShot(team, power, curl, angle) {
@@ -330,7 +348,12 @@ export class Game {
 
     const aimAngle = (Number(this.ui.angleInput.value) * Math.PI) / 180 - Math.PI / 2;
     if (this.state.lastShot) {
-      this.sheet.drawLastShot(this.ctx, this.sheet.hack, this.state.lastShot.angle, this.state.lastShot.power);
+      this.sheet.drawLastShot(
+        this.ctx,
+        this.sheet.hack,
+        this.state.lastShot.angle,
+        this.state.lastShot.power
+      );
     }
     if (!this.isStoneMoving() && this.state.currentTeam === 0) {
       this.sheet.drawAimGuide(
@@ -338,7 +361,7 @@ export class Game {
         this.sheet.hack,
         aimAngle,
         Number(this.ui.powerInput.value),
-        true
+        this.ui.aimAssistToggle.checked
       );
     }
 
@@ -353,6 +376,17 @@ export class Game {
 
     this.drawStones();
     this.updateTelemetry();
+
+    if (
+      this.state.shotClockActive &&
+      !this.isStoneMoving() &&
+      !this.state.aiThinking
+    ) {
+      this.state.shotClock = Math.max(0, this.state.shotClock - 0.016);
+      if (this.state.shotClock <= 0 && this.state.currentTeam === 0) {
+        this.throwStone();
+      }
+    }
 
     if (!this.isStoneMoving() && this.state.currentTeam === 1 && !this.state.aiThinking) {
       this.throwStone();

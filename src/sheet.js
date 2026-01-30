@@ -103,6 +103,8 @@ export class Sheet {
     ctx.lineTo(start.x + Math.cos(angleRad) * length, start.y + Math.sin(angleRad) * length);
     ctx.stroke();
 
+    this.drawAimTarget(ctx, start, angleRad, length);
+
     ctx.beginPath();
     ctx.fillStyle = "rgba(74, 195, 255, 0.8)";
     ctx.arc(start.x, start.y, 8, 0, Math.PI * 2);
@@ -111,6 +113,19 @@ export class Sheet {
     if (showTrajectory) {
       this.drawTrajectoryPreview(ctx, start, angleRad, power);
     }
+  }
+
+  drawAimTarget(ctx, start, angleRad, length) {
+    const targetX = start.x + Math.cos(angleRad) * length;
+    const targetY = start.y + Math.sin(angleRad) * length;
+    ctx.strokeStyle = "rgba(74, 195, 255, 0.5)";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(targetX, targetY, 10, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(targetX, targetY, 4, 0, Math.PI * 2);
+    ctx.stroke();
   }
 
   drawTrajectoryPreview(ctx, start, angleRad, power) {
