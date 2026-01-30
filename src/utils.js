@@ -1,0 +1,5 @@
+export const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
+export const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+
+export const lerp = (start, end, t) => start + (end - start) * t;
