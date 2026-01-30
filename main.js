@@ -19,6 +19,7 @@ const ui = {
   teamCards: document.querySelectorAll(".team-card"),
   shotHistoryList: document.getElementById("shotHistory"),
   endSummary: document.getElementById("endSummary"),
+  presetButtons: document.querySelectorAll(".preset"),
   powerInput: document.getElementById("power"),
   curlInput: document.getElementById("curl"),
   angleInput: document.getElementById("angle"),
@@ -32,6 +33,7 @@ const ui = {
 const controls = {
   throwButton: document.getElementById("throwStone"),
   sweepButton: document.getElementById("sweep"),
+  undoButton: document.getElementById("undoShot"),
   resetEndButton: document.getElementById("resetEnd"),
   scoreEndButton: document.getElementById("scoreEnd"),
   newGameButton: document.getElementById("newGame"),

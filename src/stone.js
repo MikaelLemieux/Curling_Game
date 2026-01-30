@@ -10,6 +10,7 @@ export class Stone {
     this.curl = curl;
     this.inPlay = true;
     this.active = true;
+    this.hasCrossedHog = false;
   }
 
   get speed() {

@@ -48,6 +48,16 @@ export class Sheet {
     this.drawLines(ctx);
   }
 
+  drawLastShot(ctx, start, angleRad, power) {
+    const length = 60 + power * 1.5;
+    ctx.strokeStyle = "rgba(120, 140, 160, 0.35)";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(start.x, start.y);
+    ctx.lineTo(start.x + Math.cos(angleRad) * length, start.y + Math.sin(angleRad) * length);
+    ctx.stroke();
+  }
+
   drawHouse(ctx) {
     const rings = [70, 50, 30, 12];
     const colors = ["#c41c3b", "#ffffff", "#2564ff", "#ffffff"];

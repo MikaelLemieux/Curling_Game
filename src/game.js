@@ -4,7 +4,6 @@ import { Sheet } from "./sheet.js";
 import { calculateScore } from "./scoring.js";
 import { InputController } from "./input.js";
 import { CurlingAI } from "./ai.js";
-import { clamp, distance } from "./utils.js";
 
 export class Game {
   constructor(canvas, ui, controls) {
@@ -37,6 +36,7 @@ export class Game {
       shotHistory: [],
       endHistory: [],
       aiThinking: false,
+      lastShot: null,
     };
   }
 
@@ -48,6 +48,7 @@ export class Game {
 
   attachControls() {
     this.controls.throwButton.addEventListener("click", () => this.throwStone());
+    this.controls.undoButton.addEventListener("click", () => this.undoShot());
     this.controls.resetEndButton.addEventListener("click", () => this.resetEnd());
     this.controls.scoreEndButton.addEventListener("click", () => this.scoreEnd());
     this.controls.newGameButton.addEventListener("click", () => this.resetMatch());
@@ -74,6 +75,10 @@ export class Game {
 
     this.ui.endsSetting.addEventListener("change", () => {
       this.state.totalEnds = Number(this.ui.endsSetting.value);
+    });
+
+    this.ui.presetButtons.forEach((button) => {
+      button.addEventListener("click", () => this.applyPreset(button));
     });
   }
 
@@ -148,10 +153,34 @@ export class Game {
 
     this.state.stones.push(stone);
     this.state.distanceTraveled = 0;
+    this.state.lastShot = { angle: baseAngle, power };
     this.recordShot(team, power, curl, Math.round((angleRad * 180) / Math.PI));
 
     this.state.currentShot += 1;
     this.state.currentTeam = this.state.currentShot % 2;
+    this.updateUI();
+  }
+
+  applyPreset(button) {
+    this.ui.powerInput.value = button.dataset.power;
+    this.ui.curlInput.value = button.dataset.curl;
+    this.ui.angleInput.value = button.dataset.angle;
+    this.updateSliderValues();
+  }
+
+  undoShot() {
+    if (this.isStoneMoving()) {
+      return;
+    }
+    const lastStone = this.state.stones.pop();
+    if (!lastStone) {
+      return;
+    }
+    if (this.state.currentShot > 0) {
+      this.state.currentShot -= 1;
+      this.state.currentTeam = this.state.currentShot % 2;
+    }
+    this.state.shotHistory.shift();
     this.updateUI();
   }
 
@@ -186,6 +215,7 @@ export class Game {
     this.state.currentShot = 0;
     this.state.currentTeam = this.state.hammerTeam;
     this.state.distanceTraveled = 0;
+    this.state.lastShot = null;
     this.updateUI();
   }
 
@@ -266,11 +296,15 @@ export class Game {
   }
 
   updateStoneValidity(stone) {
-    if (!this.sheet.isBeyondHogLine(stone)) {
-      return;
+    if (!stone.hasCrossedHog && this.sheet.isBeyondHogLine(stone)) {
+      stone.hasCrossedHog = true;
+    }
+    if (!stone.active && !stone.hasCrossedHog) {
+      stone.inPlay = false;
     }
     if (this.sheet.isBeyondBackLine(stone)) {
       stone.inPlay = false;
+      stone.stop();
     }
   }
 
@@ -295,6 +329,9 @@ export class Game {
     this.sheet.draw(this.ctx);
 
     const aimAngle = (Number(this.ui.angleInput.value) * Math.PI) / 180 - Math.PI / 2;
+    if (this.state.lastShot) {
+      this.sheet.drawLastShot(this.ctx, this.sheet.hack, this.state.lastShot.angle, this.state.lastShot.power);
+    }
     if (!this.isStoneMoving() && this.state.currentTeam === 0) {
       this.sheet.drawAimGuide(
         this.ctx,

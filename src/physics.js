@@ -1,18 +1,21 @@
-import { clamp, distance } from "./utils.js";
+import { distance } from "./utils.js";
 
 // Physics is deterministic and frame-based. Each frame applies friction, curl force
 // (perpendicular to velocity), then resolves collisions with elastic impulses.
 
 export class PhysicsEngine {
-  constructor({ friction, sweepFriction, curlStrength, restitution }) {
+  constructor({ friction, sweepFriction, curlStrength, sweepCurlMultiplier, restitution, angularDrag }) {
     this.friction = friction;
     this.sweepFriction = sweepFriction;
     this.curlStrength = curlStrength;
+    this.sweepCurlMultiplier = sweepCurlMultiplier;
     this.restitution = restitution;
+    this.angularDrag = angularDrag;
   }
 
   step(stones, dt, sweeping, bounds) {
     const friction = sweeping ? this.sweepFriction : this.friction;
+    const curlStrength = sweeping ? this.curlStrength * this.sweepCurlMultiplier : this.curlStrength;
 
     stones.forEach((stone) => {
       if (!stone.active) {
@@ -25,7 +28,8 @@ export class PhysicsEngine {
         return;
       }
 
-      const curlForce = stone.curl * this.curlStrength;
+      stone.curl *= this.angularDrag;
+      const curlForce = stone.curl * curlStrength;
       if (curlForce !== 0 && speed > 0) {
         const normX = -stone.velocity.y / speed;
         const normY = stone.velocity.x / speed;
@@ -122,5 +126,7 @@ export const buildPhysics = () =>
     friction: 0.992,
     sweepFriction: 0.996,
     curlStrength: 0.00004,
+    sweepCurlMultiplier: 0.7,
     restitution: 0.9,
+    angularDrag: 0.998,
   });
