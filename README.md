@@ -6,4 +6,15 @@ Launch the game with any static server.
 python -m http.server 8000
 ```
 
-Then open `http://localhost:8000` in your browser.
+Then open `http://localhost:8000`.
+
+## Controls
+- Drag on the sheet or use sliders to set the shot.
+- Press **Space** to throw a stone.
+- Hold **Shift** or the Sweep button to reduce friction.
+
+## Gameplay
+- Two teams (Red vs Blue) play 8 stones per end.
+- Stones must cross the hog line to remain in play.
+- The closest stone scores; only one team scores per end.
+- Hammer goes to the team that did not score.
