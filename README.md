@@ -1,6 +1,6 @@
-# Complete Curling Game
+# Glacier Curling Pro
 
-Open `index.html` directly in a browser or serve with a simple HTTP server:
+Launch the game with any static server.
 
 ```bash
 python -m http.server 8000
