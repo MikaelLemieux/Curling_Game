@@ -3,15 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Complete Curling Game</title>
-    <link rel="stylesheet" href="style.css" />
+    <title>Glacier Curling Pro</title>
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <div class="app">
       <header>
         <div>
-          <p class="league">World Curling Series</p>
-          <h1>Complete Curling Game</h1>
+          <p class="league">World Curling Simulation</p>
+          <h1>Glacier Curling Pro</h1>
         </div>
         <div class="status">
           <div>
@@ -22,59 +22,35 @@
             <span class="label">Shot</span>
             <span id="shotNumber">1</span>
           </div>
-          <div>
-            <span class="label">Hammer</span>
-            <span id="hammerTeam">Red</span>
-          </div>
         </div>
       </header>
 
       <main>
         <section class="arena">
-          <div class="arena-top">
-            <div class="legend">
-              <span class="dot red"></span> Red
-              <span class="dot blue"></span> Blue
-            </div>
-            <div class="shortcuts">Drag to aim • Space: Throw • Shift: Sweep</div>
-          </div>
-          <canvas id="sheet" width="700" height="1200"></canvas>
+          <canvas id="sheet" width="640" height="960"></canvas>
           <div class="aim-panel">
             <div class="aim-row">
               <div>
                 <p class="label">Throwing</p>
-                <p class="team" id="currentTeam">Red</p>
+                <p class="team" id="currentTeam">Aurora</p>
               </div>
               <div class="stone-count">
                 <span class="label">Stones Left</span>
                 <span id="stonesLeft">8</span>
               </div>
-              <div class="stone-count">
-                <span class="label">Turn</span>
-                <span id="turnIndicator">Player</span>
-              </div>
             </div>
             <div class="controls">
               <label>
                 Power
-                <div class="slider-row">
-                  <input type="range" id="power" min="20" max="100" value="60" />
-                  <span id="powerValue">60</span>
-                </div>
+                <input type="range" id="power" min="15" max="100" value="65" />
               </label>
               <label>
                 Curl
-                <div class="slider-row">
-                  <input type="range" id="curl" min="-40" max="40" value="0" />
-                  <span id="curlValue">0</span>
-                </div>
+                <input type="range" id="curl" min="-40" max="40" value="0" />
               </label>
               <label>
                 Aim
-                <div class="slider-row">
-                  <input type="range" id="angle" min="-40" max="40" value="0" />
-                  <span id="angleValue">0°</span>
-                </div>
+                <input type="range" id="angle" min="-40" max="40" value="0" />
               </label>
             </div>
             <div class="action-row">
@@ -83,7 +59,8 @@
               <button id="resetEnd">Reset End</button>
             </div>
             <p class="hint">
-              Stones must cross the hog line to stay in play. Use curl to bend around guards.
+              Drag on the sheet or use sliders to adjust the shot. Sweeping reduces friction while
+              the stone is moving.
             </p>
           </div>
         </section>
@@ -93,11 +70,11 @@
             <h2>Scoreboard</h2>
             <div class="teams">
               <div class="team-card" data-team="0">
-                <h3>Red</h3>
+                <h3>Aurora</h3>
                 <p class="score" id="scoreTeam0">0</p>
               </div>
               <div class="team-card" data-team="1">
-                <h3>Blue</h3>
+                <h3>Frostbite</h3>
                 <p class="score" id="scoreTeam1">0</p>
               </div>
             </div>
@@ -129,50 +106,19 @@
             </div>
           </section>
 
-          <section class="settings">
-            <h2>Match Settings</h2>
-            <label class="field">
-              Ends per match
-              <select id="endsSetting">
-                <option value="4">4 Ends</option>
-                <option value="6">6 Ends</option>
-                <option value="8" selected>8 Ends</option>
-                <option value="10">10 Ends</option>
-              </select>
-            </label>
-            <label class="field">
-              AI difficulty
-              <select id="aiDifficulty">
-                <option value="0.6">Easy</option>
-                <option value="0.8" selected>Balanced</option>
-                <option value="1.0">Pro</option>
-              </select>
-            </label>
-          </section>
-
-          <section class="history">
-            <h2>Shot History</h2>
-            <ol id="shotHistory" class="history-list"></ol>
-          </section>
-
-          <section class="ends">
-            <h2>End Summary</h2>
-            <div id="endSummary" class="end-list"></div>
-          </section>
-
           <section class="rules">
             <h2>Quick Rules</h2>
             <ul>
-              <li>Two teams throw eight stones per end.</li>
-              <li>Stones must cross the hog line to remain in play.</li>
-              <li>Only one team scores per end: stones closer than the opponent.</li>
-              <li>Hammer goes to the team that did not score last end.</li>
+              <li>Each team throws 8 stones per end.</li>
+              <li>Only the team with the closest stone to the button scores.</li>
+              <li>Score one point for every stone closer than the opponent.</li>
+              <li>Use curl to bend shots around guards.</li>
             </ul>
           </section>
         </aside>
       </main>
     </div>
 
-    <script type="module" src="main.js"></script>
+    <script src="game.js"></script>
   </body>
 </html>
