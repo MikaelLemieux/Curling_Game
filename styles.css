@@ -66,7 +66,7 @@ header h1 {
 
 main {
   display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
   gap: 24px;
 }
 
@@ -74,41 +74,6 @@ main {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 16px;
-}
-
-.arena-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.85rem;
-  opacity: 0.75;
-}
-
-.legend {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  display: inline-block;
-  margin-right: 6px;
-}
-
-.dot.aurora {
-  background: #5ad1ff;
-}
-
-.dot.frostbite {
-  background: #ff6b9f;
-}
-
-.shortcuts {
-  font-size: 0.75rem;
-  opacity: 0.7;
 }
 
 #sheet {
@@ -153,20 +118,6 @@ main {
   display: grid;
   gap: 6px;
   font-size: 0.85rem;
-}
-
-.slider-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 8px;
-  align-items: center;
-}
-
-.slider-row span {
-  min-width: 40px;
-  text-align: right;
-  font-size: 0.8rem;
-  opacity: 0.8;
 }
 
 input[type="range"] {
@@ -223,11 +174,7 @@ button:active {
 
 .scoreboard,
 .telemetry,
-.rules,
-.shot-library,
-.settings,
-.history,
-.ends {
+.rules {
   background: rgba(10, 19, 32, 0.92);
   border-radius: 20px;
   padding: 20px;
@@ -236,11 +183,7 @@ button:active {
 
 .scoreboard h2,
 .telemetry h2,
-.rules h2,
-.shot-library h2,
-.settings h2,
-.history h2,
-.ends h2 {
+.rules h2 {
   margin-top: 0;
 }
 
@@ -277,102 +220,6 @@ button:active {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
-}
-
-.shot-grid {
-  display: grid;
-  gap: 10px;
-}
-
-.preset {
-  background: rgba(88, 122, 168, 0.4);
-  border: 1px solid rgba(118, 155, 199, 0.3);
-}
-
-.toggle {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  gap: 12px;
-  font-size: 0.85rem;
-  margin-bottom: 10px;
-}
-
-.toggle input {
-  display: none;
-}
-
-.field {
-  display: grid;
-  gap: 6px;
-  font-size: 0.85rem;
-}
-
-.field select {
-  background: rgba(20, 32, 50, 0.8);
-  border: 1px solid rgba(118, 155, 199, 0.3);
-  border-radius: 10px;
-  color: inherit;
-  padding: 8px 10px;
-}
-
-.toggle-track {
-  width: 44px;
-  height: 24px;
-  border-radius: 999px;
-  background: rgba(118, 155, 199, 0.3);
-  position: relative;
-  transition: 0.2s ease;
-}
-
-.toggle-track::after {
-  content: "";
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #f2f6ff;
-  position: absolute;
-  top: 3px;
-  left: 4px;
-  transition: 0.2s ease;
-}
-
-.toggle input:checked + .toggle-track {
-  background: rgba(74, 195, 255, 0.6);
-}
-
-.toggle input:checked + .toggle-track::after {
-  left: 22px;
-  background: #03101f;
-}
-
-.history-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  gap: 10px;
-}
-
-.history-list li {
-  padding: 8px 12px;
-  border-radius: 12px;
-  background: rgba(20, 32, 50, 0.7);
-  font-size: 0.85rem;
-}
-
-.end-list {
-  display: grid;
-  gap: 10px;
-}
-
-.end-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 12px;
-  border-radius: 12px;
-  background: rgba(20, 32, 50, 0.7);
-  font-size: 0.85rem;
 }
 
 .rules ul {

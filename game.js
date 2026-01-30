@@ -4,22 +4,11 @@ const ctx = canvas.getContext("2d");
 const powerInput = document.getElementById("power");
 const curlInput = document.getElementById("curl");
 const angleInput = document.getElementById("angle");
-const powerValue = document.getElementById("powerValue");
-const curlValue = document.getElementById("curlValue");
-const angleValue = document.getElementById("angleValue");
 const throwButton = document.getElementById("throwStone");
 const sweepButton = document.getElementById("sweep");
-const undoButton = document.getElementById("undoShot");
 const resetEndButton = document.getElementById("resetEnd");
 const scoreEndButton = document.getElementById("scoreEnd");
 const newGameButton = document.getElementById("newGame");
-const presetButtons = document.querySelectorAll(".preset");
-const shotHistoryList = document.getElementById("shotHistory");
-const endSummary = document.getElementById("endSummary");
-const aimAssistToggle = document.getElementById("aimAssist");
-const practiceModeToggle = document.getElementById("practiceMode");
-const practiceTeamSelect = document.getElementById("practiceTeam");
-const hammerTeamLabel = document.getElementById("hammerTeam");
 
 const currentTeamLabel = document.getElementById("currentTeam");
 const stonesLeftLabel = document.getElementById("stonesLeft");
@@ -67,10 +56,6 @@ const gameState = {
   scores: [0, 0],
   sweeping: false,
   distanceTraveled: 0,
-  shotHistory: [],
-  endHistory: [],
-  lastShotScore: 0,
-  hammerTeam: 0,
 };
 
 const frictionBase = 0.992;
@@ -187,43 +172,6 @@ function drawAimGuide() {
   ctx.fillStyle = "rgba(74, 195, 255, 0.8)";
   ctx.arc(rink.hack.x, rink.hack.y, 8, 0, Math.PI * 2);
   ctx.fill();
-
-  if (aimAssistToggle.checked) {
-    drawTrajectoryPreview(power, baseAngle, Number(curlInput.value));
-  }
-}
-
-function drawTrajectoryPreview(power, baseAngle, curl) {
-  let simX = rink.hack.x;
-  let simY = rink.hack.y;
-  let vx = (0.08 + power * 0.065) * Math.cos(baseAngle);
-  let vy = (0.08 + power * 0.065) * Math.sin(baseAngle);
-  let speed = Math.hypot(vx, vy);
-
-  ctx.strokeStyle = "rgba(74, 195, 255, 0.3)";
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(simX, simY);
-
-  for (let i = 0; i < 240; i += 1) {
-    const curlFactor = curl * 0.00004;
-    if (curlFactor !== 0) {
-      const normX = -vy / speed;
-      const normY = vx / speed;
-      vx += normX * curlFactor * dt * speed;
-      vy += normY * curlFactor * dt * speed;
-    }
-    vx *= frictionBase;
-    vy *= frictionBase;
-    simX += vx;
-    simY += vy;
-    speed = Math.hypot(vx, vy);
-    ctx.lineTo(simX, simY);
-    if (speed < 0.03) {
-      break;
-    }
-  }
-  ctx.stroke();
 }
 
 function updatePhysics() {
@@ -345,69 +293,21 @@ function updateUI() {
   stonesLeftLabel.textContent = stonesRemaining;
   shotNumberLabel.textContent = gameState.currentShot + 1;
   endNumberLabel.textContent = gameState.endNumber;
-  hammerTeamLabel.textContent = teamData[gameState.hammerTeam].name;
 
   teamCards.forEach((card, index) => {
     card.classList.toggle("active", index === gameState.currentTeam);
   });
 }
 
-function updateSliderValues() {
-  powerValue.textContent = powerInput.value;
-  curlValue.textContent = curlInput.value;
-  angleValue.textContent = `${angleInput.value}°`;
-}
-
 function isStoneMoving() {
   return gameState.stones.some((stone) => stone.active);
-}
-
-function getThrowingTeam() {
-  if (practiceModeToggle.checked) {
-    return Number(practiceTeamSelect.value);
-  }
-  return gameState.currentTeam;
-}
-
-function recordShot({ team, power, curl, angle }) {
-  gameState.shotHistory.unshift({
-    team,
-    power,
-    curl,
-    angle,
-    end: gameState.endNumber,
-    shot: gameState.currentShot,
-  });
-  if (gameState.shotHistory.length > 8) {
-    gameState.shotHistory.pop();
-  }
-  renderShotHistory();
-}
-
-function renderShotHistory() {
-  shotHistoryList.innerHTML = "";
-  gameState.shotHistory.forEach((shot) => {
-    const item = document.createElement("li");
-    item.textContent = `End ${shot.end}, Shot ${shot.shot} • ${teamData[shot.team].name} • P${shot.power} C${shot.curl} A${shot.angle}`;
-    shotHistoryList.appendChild(item);
-  });
-}
-
-function updateEndSummary() {
-  endSummary.innerHTML = "";
-  gameState.endHistory.forEach((end) => {
-    const row = document.createElement("div");
-    row.className = "end-item";
-    row.innerHTML = `<span>End ${end.end}</span><span>${end.label}</span>`;
-    endSummary.appendChild(row);
-  });
 }
 
 function throwStone() {
   if (isStoneMoving()) {
     return;
   }
-  if (!practiceModeToggle.checked && gameState.currentShot >= gameState.totalShots) {
+  if (gameState.currentShot >= gameState.totalShots) {
     return;
   }
 
@@ -417,42 +317,18 @@ function throwStone() {
   const speed = 0.08 + power * 0.065;
   const baseAngle = -Math.PI / 2 + angle;
 
-  const team = getThrowingTeam();
-  const stone = createStone(team, speed, baseAngle, curl);
+  const stone = createStone(gameState.currentTeam, speed, baseAngle, curl);
   gameState.stones.push(stone);
+  gameState.currentShot += 1;
+  gameState.currentTeam = gameState.currentShot % 2;
   gameState.distanceTraveled = 0;
-
-  recordShot({ team, power, curl, angle: Math.round(angleInput.value) });
-
-  if (!practiceModeToggle.checked) {
-    gameState.currentShot += 1;
-    gameState.currentTeam = gameState.currentShot % 2;
-  }
-
-  updateUI();
-}
-
-function undoShot() {
-  if (isStoneMoving()) {
-    return;
-  }
-  const lastStone = gameState.stones.pop();
-  if (!lastStone) {
-    return;
-  }
-  if (!practiceModeToggle.checked && gameState.currentShot > 0) {
-    gameState.currentShot -= 1;
-    gameState.currentTeam = gameState.currentShot % 2;
-  }
-  gameState.shotHistory.shift();
-  renderShotHistory();
   updateUI();
 }
 
 function resetEnd() {
   gameState.stones = [];
   gameState.currentShot = 0;
-  gameState.currentTeam = gameState.hammerTeam;
+  gameState.currentTeam = gameState.endNumber % 2;
   gameState.distanceTraveled = 0;
   updateUI();
 }
@@ -460,11 +336,9 @@ function resetEnd() {
 function resetMatch() {
   gameState.endNumber = 1;
   gameState.scores = [0, 0];
-  gameState.endHistory = [];
   scoreLabels.forEach((label, index) => {
     label.textContent = gameState.scores[index];
   });
-  updateEndSummary();
   resetEnd();
 }
 
@@ -473,17 +347,12 @@ function scoreEnd() {
     return;
   }
   const scoredTeam = calculateScore();
-  let summaryLabel = "Blank end";
-  if (scoredTeam.team !== null && scoredTeam.points > 0) {
+  if (scoredTeam.team !== null) {
     gameState.scores[scoredTeam.team] += scoredTeam.points;
     scoreLabels.forEach((label, index) => {
       label.textContent = gameState.scores[index];
     });
-    summaryLabel = `${teamData[scoredTeam.team].name} +${scoredTeam.points}`;
-    gameState.hammerTeam = scoredTeam.team === 0 ? 1 : 0;
   }
-  gameState.endHistory.push({ end: gameState.endNumber, label: summaryLabel });
-  updateEndSummary();
   gameState.endNumber += 1;
   resetEnd();
 }
@@ -522,18 +391,10 @@ function handleSweep(state) {
   sweepStatusLabel.textContent = state ? "On" : "Off";
 }
 
-function applyPreset(preset) {
-  powerInput.value = preset.dataset.power;
-  curlInput.value = preset.dataset.curl;
-  angleInput.value = preset.dataset.angle;
-  updateSliderValues();
-}
-
 throwButton.addEventListener("click", throwStone);
 resetEndButton.addEventListener("click", resetEnd);
 scoreEndButton.addEventListener("click", scoreEnd);
 newGameButton.addEventListener("click", resetMatch);
-undoButton.addEventListener("click", undoShot);
 
 sweepButton.addEventListener("mousedown", () => handleSweep(true));
 sweepButton.addEventListener("mouseup", () => handleSweep(false));
@@ -562,7 +423,6 @@ canvas.addEventListener("mousemove", (event) => {
   const distance = Math.min(180, Math.hypot(dx, dy));
   const power = Math.max(15, Math.min(100, distance));
   powerInput.value = power.toFixed(0);
-  updateSliderValues();
 });
 
 canvas.addEventListener("mouseup", () => {
@@ -573,37 +433,5 @@ canvas.addEventListener("mouseleave", () => {
   dragStart = null;
 });
 
-presetButtons.forEach((button) => {
-  button.addEventListener("click", () => applyPreset(button));
-});
-
-[powerInput, curlInput, angleInput].forEach((input) => {
-  input.addEventListener("input", updateSliderValues);
-});
-
-window.addEventListener("keydown", (event) => {
-  if (event.code === "Space") {
-    event.preventDefault();
-    throwStone();
-  }
-  if (event.key === "Shift") {
-    handleSweep(true);
-  }
-  if (event.key.toLowerCase() === "u") {
-    undoShot();
-  }
-  if (event.key.toLowerCase() === "r") {
-    resetEnd();
-  }
-});
-
-window.addEventListener("keyup", (event) => {
-  if (event.key === "Shift") {
-    handleSweep(false);
-  }
-});
-
-updateSliderValues();
-updateEndSummary();
 updateUI();
 animate();

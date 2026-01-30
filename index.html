@@ -22,22 +22,11 @@
             <span class="label">Shot</span>
             <span id="shotNumber">1</span>
           </div>
-          <div>
-            <span class="label">Hammer</span>
-            <span id="hammerTeam">Aurora</span>
-          </div>
         </div>
       </header>
 
       <main>
         <section class="arena">
-          <div class="arena-top">
-            <div class="legend">
-              <span class="dot aurora"></span> Aurora
-              <span class="dot frostbite"></span> Frostbite
-            </div>
-            <div class="shortcuts">Space: Throw • Shift: Sweep • U: Undo • R: Reset</div>
-          </div>
           <canvas id="sheet" width="640" height="960"></canvas>
           <div class="aim-panel">
             <div class="aim-row">
@@ -53,30 +42,20 @@
             <div class="controls">
               <label>
                 Power
-                <div class="slider-row">
-                  <input type="range" id="power" min="15" max="100" value="65" />
-                  <span id="powerValue">65</span>
-                </div>
+                <input type="range" id="power" min="15" max="100" value="65" />
               </label>
               <label>
                 Curl
-                <div class="slider-row">
-                  <input type="range" id="curl" min="-40" max="40" value="0" />
-                  <span id="curlValue">0</span>
-                </div>
+                <input type="range" id="curl" min="-40" max="40" value="0" />
               </label>
               <label>
                 Aim
-                <div class="slider-row">
-                  <input type="range" id="angle" min="-40" max="40" value="0" />
-                  <span id="angleValue">0°</span>
-                </div>
+                <input type="range" id="angle" min="-40" max="40" value="0" />
               </label>
             </div>
             <div class="action-row">
               <button id="throwStone" class="primary">Throw Stone</button>
               <button id="sweep" class="ghost">Hold to Sweep</button>
-              <button id="undoShot">Undo Shot</button>
               <button id="resetEnd">Reset End</button>
             </div>
             <p class="hint">
@@ -125,47 +104,6 @@
                 <p id="sweepStatus">Off</p>
               </div>
             </div>
-          </section>
-
-          <section class="shot-library">
-            <h2>Shot Library</h2>
-            <div class="shot-grid">
-              <button class="preset" data-power="62" data-curl="4" data-angle="0">Draw to Button</button>
-              <button class="preset" data-power="48" data-curl="6" data-angle="-6">Center Guard</button>
-              <button class="preset" data-power="84" data-curl="0" data-angle="2">Takeout</button>
-              <button class="preset" data-power="74" data-curl="-8" data-angle="8">Hit &amp; Roll</button>
-            </div>
-          </section>
-
-          <section class="settings">
-            <h2>Match Settings</h2>
-            <label class="toggle">
-              <input type="checkbox" id="aimAssist" checked />
-              <span class="toggle-track"></span>
-              Aim assist trajectory
-            </label>
-            <label class="toggle">
-              <input type="checkbox" id="practiceMode" />
-              <span class="toggle-track"></span>
-              Free practice (no shot limits)
-            </label>
-            <label class="field">
-              Practice team
-              <select id="practiceTeam">
-                <option value="0">Aurora</option>
-                <option value="1">Frostbite</option>
-              </select>
-            </label>
-          </section>
-
-          <section class="history">
-            <h2>Shot History</h2>
-            <ol id="shotHistory" class="history-list"></ol>
-          </section>
-
-          <section class="ends">
-            <h2>End Summary</h2>
-            <div id="endSummary" class="end-list"></div>
           </section>
 
           <section class="rules">
