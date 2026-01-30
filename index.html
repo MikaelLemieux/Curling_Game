@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Glacier Curling Pro</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <div>
+          <p class="league">World Curling Simulation</p>
+          <h1>Glacier Curling Pro</h1>
+        </div>
+        <div class="status">
+          <div>
+            <span class="label">End</span>
+            <span id="endNumber">1</span>
+          </div>
+          <div>
+            <span class="label">Shot</span>
+            <span id="shotNumber">1</span>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section class="arena">
+          <canvas id="sheet" width="640" height="960"></canvas>
+          <div class="aim-panel">
+            <div class="aim-row">
+              <div>
+                <p class="label">Throwing</p>
+                <p class="team" id="currentTeam">Aurora</p>
+              </div>
+              <div class="stone-count">
+                <span class="label">Stones Left</span>
+                <span id="stonesLeft">8</span>
+              </div>
+            </div>
+            <div class="controls">
+              <label>
+                Power
+                <input type="range" id="power" min="15" max="100" value="65" />
+              </label>
+              <label>
+                Curl
+                <input type="range" id="curl" min="-40" max="40" value="0" />
+              </label>
+              <label>
+                Aim
+                <input type="range" id="angle" min="-40" max="40" value="0" />
+              </label>
+            </div>
+            <div class="action-row">
+              <button id="throwStone" class="primary">Throw Stone</button>
+              <button id="sweep" class="ghost">Hold to Sweep</button>
+              <button id="resetEnd">Reset End</button>
+            </div>
+            <p class="hint">
+              Drag on the sheet or use sliders to adjust the shot. Sweeping reduces friction while
+              the stone is moving.
+            </p>
+          </div>
+        </section>
+
+        <aside class="sidebar">
+          <section class="scoreboard">
+            <h2>Scoreboard</h2>
+            <div class="teams">
+              <div class="team-card" data-team="0">
+                <h3>Aurora</h3>
+                <p class="score" id="scoreTeam0">0</p>
+              </div>
+              <div class="team-card" data-team="1">
+                <h3>Frostbite</h3>
+                <p class="score" id="scoreTeam1">0</p>
+              </div>
+            </div>
+            <div class="end-controls">
+              <button id="scoreEnd" class="primary">Score End</button>
+              <button id="newGame" class="ghost">New Match</button>
+            </div>
+          </section>
+
+          <section class="telemetry">
+            <h2>Shot Telemetry</h2>
+            <div class="telemetry-grid">
+              <div>
+                <p class="label">Speed</p>
+                <p id="speed">0.0 m/s</p>
+              </div>
+              <div>
+                <p class="label">Spin</p>
+                <p id="spin">0.0 rad/s</p>
+              </div>
+              <div>
+                <p class="label">Distance</p>
+                <p id="distance">0.0 m</p>
+              </div>
+              <div>
+                <p class="label">Sweep</p>
+                <p id="sweepStatus">Off</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="rules">
+            <h2>Quick Rules</h2>
+            <ul>
+              <li>Each team throws 8 stones per end.</li>
+              <li>Only the team with the closest stone to the button scores.</li>
+              <li>Score one point for every stone closer than the opponent.</li>
+              <li>Use curl to bend shots around guards.</li>
+            </ul>
+          </section>
+        </aside>
+      </main>
+    </div>
+
+    <script src="game.js"></script>
+  </body>
+</html>
